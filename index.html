@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FS E-Commerce</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+            transition: background-color 0.3s ease;
+        }
+        h1, h2 {
+            color: #444;
+        }
+        select {
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .metrics, .terminology, .benefits {
+            display: none;
+        }
+        .metrics table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .metrics th, .metrics td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .metrics th {
+            background-color: #f2f2f2;
+        }
+
+        /* Industry-specific background colors */
+        .retail-background { background-color: #FF6F61; }
+        .consumer-goods-background { background-color: #4E8C57; }
+        .services-background { background-color: #2E88A0; }
+        .food-and-beverage-background { background-color: #FF9F00; }
+        .fashion-background { background-color: #F9A8D4; }
+        .diy-hardware-background { background-color: #4A7C59; }
+        .electronics-background { background-color: #4C9DD7; }
+        .media-background { background-color: #D4A5A5; }
+        .beauty-and-health-background { background-color: #9B5DE5; }
+        .e-learning-background { background-color: #6B9AC4; }
+    </style>
+</head>
+<body>
+
+    <h1>E-Commerce Industry Breakdown</h1>
+
+    <div class="section">
+        <h2>Industries</h2>
+        <select id="industrySelect" onchange="filterContent()">
+            <option value="">--Choose an Industry--</option>
+            <option value="Retail">Retail</option>
+            <option value="Consumer Goods">Consumer Goods</option>
+            <option value="Services">Services</option>
+            <option value="Food and Beverage">Food and Beverage</option>
+            <option value="Fashion">Fashion</option>
+            <option value="DIY and Hardware">DIY and Hardware</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Media">Media</option>
+            <option value="Beauty and Health">Beauty and Health</option>
+            <option value="E-Learning">E-Learning</option>
+        </select>
+    </div>
+
+    <div class="section terminology" id="terminologySection">
+        <h2>Industry Terminology</h2>
+        <ul id="terminologyList"></ul>
+    </div>
+
+    <div class="section metrics" id="metricsSection">
+        <h2>Top 5 Metrics and KPIs</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Metric/KPI</th>
+                    <th>Formula</th>
+                </tr>
+            </thead>
+            <tbody id="metricsTable"></tbody>
+        </table>
+    </div>
+
+    <div class="section benefits" id="benefitsSection">
+        <h2>Why E-commerce Customers Love Fullstory</h2>
+        <ul id="benefitsList"></ul>
+    </div>
+
+    <script>
+        const industryData = {
+            "Retail": {
+                terminology: [
+                    "Cart Abandonment",
+                    "Conversion Funnel",
+                    "Checkout Optimization",
+                    "Personalization",
+                    "Bounce Rate",
+                    "User Friction",
+                    "Customer Journey",
+                    "Revenue Per Visitor",
+                    "Product Discovery",
+                    "Mobile Optimization"
+                ],
+                metrics: [
+                    { name: "Conversion Rate", formula: "(Sales / Visitors) × 100" },
+                    { name: "Average Order Value (AOV)", formula: "Revenue / Orders" },
+                    { name: "Cart Abandonment Rate", formula: "(Abandoned Carts / Initiated Carts) × 100" }
+                ],
+                benefits: [
+                    "Identify barriers in the customer journey",
+                    "Enhance checkout flow",
+                    "Increase average order value"
+                ],
+                backgroundClass: "retail-background"
+            },
+            "Consumer Goods": {
+                terminology: [
+                    "Customer Retention",
+                    "Product Lifecycle",
+                    "Market Share Growth",
+                    "Customer Feedback",
+                    "Cross-Selling Opportunities",
+                    "Purchase Behavior",
+                    "Customer Lifetime Value",
+                    "Brand Loyalty",
+                    "Repeat Purchases",
+                    "Order Frequency"
+                ],
+                metrics: [
+                    { name: "Customer Retention Rate", formula: "((End Customers - New Customers) / Start Customers) × 100" },
+                    { name: "Customer Lifetime Value (CLV)", formula: "Average Purchase Value × Purchase Frequency × Customer Lifespan" },
+                    { name: "Churn Rate", formula: "(Lost Customers / Total Customers) × 100" }
+                ],
+                benefits: [
+                    "Enhance customer loyalty programs",
+                    "Identify high-value customers",
+                    "Optimize product recommendations"
+                ],
+                backgroundClass: "consumer-goods-background"
+            },
+            "Services": {
+                terminology: [
+                    "Client Satisfaction",
+                    "Service Efficiency",
+                    "First-Time Resolution",
+                    "Utilization Rate",
+                    "Customer Onboarding",
+                    "Ticket Resolution",
+                    "Support Journey",
+                    "Service Improvement",
+                    "Process Optimization",
+                    "Customer Effort Score"
+                ],
+                metrics: [
+                    { name: "First Contact Resolution", formula: "(Cases Resolved on First Contact / Total Cases) × 100" },
+                    { name: "Customer Satisfaction Score (CSAT)", formula: "(Number of Satisfied Customers / Total Responses) × 100" },
+                    { name: "Net Promoter Score (NPS)", formula: "(Promoters - Detractors) / Total Responses" }
+                ],
+                benefits: [
+                    "Enhance client satisfaction",
+                    "Improve service workflows",
+                    "Optimize employee performance"
+                ],
+                backgroundClass: "services-background"
+            },
+            "Food and Beverage": {
+                terminology: [
+                    "Menu Optimization",
+                    "Customer Loyalty",
+                    "Order Frequency",
+                    "Return Visits",
+                    "Table Turnover",
+                    "Order Accuracy",
+                    "Sales Conversion",
+                    "Online Ordering Experience",
+                    "Customer Retention",
+                    "Delivery Optimization"
+                ],
+                metrics: [
+                    { name: "Table Turnover Rate", formula: "(Customers Served / Available Tables)" },
+                    { name: "Order Accuracy Rate", formula: "(Accurate Orders / Total Orders) × 100" },
+                    { name: "Online Order Conversion Rate", formula: "(Completed Orders / Total Visitors) × 100" }
+                ],
+                benefits: [
+                    "Boost repeat customer visits",
+                    "Optimize online ordering experience",
+                    "Increase order value per customer"
+                ],
+                backgroundClass: "food-and-beverage-background"
+            },
+            "Fashion": {
+                terminology: [
+                    "Product Discovery",
+                    "Personalized Recommendations",
+                    "Seasonal Trends",
+                    "Style Preferences",
+                    "Product Pages Engagement",
+                    "Return Rate",
+                    "Shopping Cart Conversion",
+                    "Customer Segmentation",
+                    "Mobile Shopping Experience",
+                    "Flash Sales"
+                ],
+                metrics: [
+                    { name: "Conversion Rate", formula: "(Purchases / Visitors) × 100" },
+                    { name: "Return Rate", formula: "(Returned Items / Total Items Sold) × 100" },
+                    { name: "Customer Lifetime Value (CLV)", formula: "Average Purchase Value × Purchase Frequency × Customer Lifespan" }
+                ],
+                benefits: [
+                    "Enhance product recommendations",
+                    "Personalize shopping experiences",
+                    "Increase shopping cart conversion"
+                ],
+                backgroundClass: "fashion-background"
+            },
+            "DIY and Hardware": {
+                terminology: [
+                    "Product Search",
+                    "Customer Assistance",
+                    "Stock Availability",
+                    "Shopping Cart Size",
+                    "Replenishment",
+                    "Seasonal Sales",
+                    "Order Completion",
+                    "Delivery Optimization",
+                    "Bulk Ordering",
+                    "Customer Reviews"
+                ],
+                metrics: [
+                    { name: "Average Order Value (AOV)", formula: "Revenue / Orders" },
+                    { name: "Repeat Purchase Rate", formula: "(Repeat Customers / Total Customers) × 100" },
+                    { name: "Order Completion Rate", formula: "(Completed Orders / Total Orders) × 100" }
+                ],
+                benefits: [
+                    "Increase sales through targeted promotions",
+                    "Optimize product availability",
+                    "Enhance customer satisfaction"
+                ],
+                backgroundClass: "diy-hardware-background"
+            },
+            "Electronics": {
+                terminology: [
+                    "Tech Upgrades",
+                    "Return Rate",
+                    "Warranty Claims",
+                    "Shopping Cart Abandonment",
+                    "Customer Reviews",
+                    "Purchase Intent",
+                    "Product Recommendations",
+                    "Brand Loyalty",
+                    "Customer Feedback",
+                    "Feature Adoption"
+                ],
+                metrics: [
+                    { name: "Conversion Rate", formula: "(Sales / Visitors) × 100" },
+                    { name: "Return Rate", formula: "(Returns / Sales) × 100" },
+                    { name: "Customer Retention Rate", formula: "((End Customers - New Customers) / Start Customers) × 100" }
+                ],
+                benefits: [
+                    "Reduce product return rates",
+                    "Enhance purchase intent",
+                    "Improve tech upgrade recommendations"
+                ],
+                backgroundClass: "electronics-background"
+            },
+            "Media": {
+                terminology: [
+                    "Audience Engagement",
+                    "View Time",
+                    "Video Completion",
+                    "Click-Through Rate",
+                    "Subscriber Growth",
+                    "Content Consumption",
+                    "Audience Retention",
+                    "Content Personalization",
+                    "Social Sharing",
+                    "Bounce Rate"
+                ],
+                metrics: [
+                    { name: "Click-Through Rate", formula: "(Clicks / Impressions) × 100" },
+                    { name: "Audience Retention Rate", formula: "(Viewers Remaining / Total Viewers) × 100" },
+                    { name: "Subscriber Churn Rate", formula: "(Lost Subscribers / Total Subscribers) × 100" }
+                ],
+                benefits: [
+                    "Boost audience engagement",
+                    "Enhance content personalization",
+                    "Increase video completion rates"
+                ],
+                backgroundClass: "media-background"
+            },
+            "Beauty and Health": {
+                terminology: [
+                    "Product Recommendations",
+                    "Customer Reviews",
+                    "Subscription Rate",
+                    "Order Frequency",
+                    "Repeat Purchases",
+                    "Customer Satisfaction",
+                    "Product Discovery",
+                    "Personalization",
+                    "Beauty Trends",
+                    "Return Rate"
+                ],
+                metrics: [
+                    { name: "Customer Retention Rate", formula: "(Returning Customers / Total Customers) × 100" },
+                    { name: "Order Frequency", formula: "Total Orders / Total Customers" },
+                    { name: "Average Order Value (AOV)", formula: "Revenue / Orders" }
+                ],
+                benefits: [
+                    "Increase repeat purchases",
+                    "Enhance product recommendations",
+                    "Improve customer satisfaction"
+                ],
+                backgroundClass: "beauty-and-health-background"
+            },
+            "E-Learning": {
+                terminology: [
+                    "Engagement Metrics",
+                    "Completion Rate",
+                    "Course Drop-Off Rate",
+                    "Learning Progression",
+                    "Student Feedback",
+                    "Content Interaction",
+                    "Learning Paths",
+                    "Study Sessions",
+                    "Assessment Results",
+                    "Course Retention"
+                ],
+                metrics: [
+                    { name: "Course Completion Rate", formula: "(Completed Courses / Total Enrolled) × 100" },
+                    { name: "Drop-Off Rate", formula: "(Drop-Off Students / Total Students) × 100" },
+                    { name: "Student Retention Rate", formula: "(Returning Students / Total Students) × 100" }
+                ],
+                benefits: [
+                    "Improve student engagement",
+                    "Increase course completion rates",
+                    "Optimize learning paths"
+                ],
+                backgroundClass: "e-learning-background"
+            }
+        };
+        
+        function filterContent() {
+            const industry = document.getElementById("industrySelect").value;
+            if (!industryData[industry]) return;
+            
+            // Change background color based on the selected industry
+            document.body.className = ''; // Reset the class
+            document.body.classList.add(industryData[industry].backgroundClass);
+
+            // Show sections
+            document.getElementById("terminologySection").style.display = "block";
+            document.getElementById("metricsSection").style.display = "block";
+            document.getElementById("benefitsSection").style.display = "block";
+
+            // Update terminology
+            const terminologyList = document.getElementById("terminologyList");
+            terminologyList.innerHTML = "";
+            industryData[industry].terminology.forEach(term => {
+                let li = document.createElement("li");
+                li.textContent = term;
+                terminologyList.appendChild(li);
+            });
+
+            // Update metrics
+            const metricsTable = document.getElementById("metricsTable");
+            metricsTable.innerHTML = "";
+            industryData[industry].metrics.forEach(metric => {
+                let row = `<tr><td>${metric.name}</td><td>${metric.formula}</td></tr>`;
+                metricsTable.innerHTML += row;
+            });
+
+            // Update benefits
+            const benefitsList = document.getElementById("benefitsList");
+            benefitsList.innerHTML = "";
+            industryData[industry].benefits.forEach(benefit => {
+                let li = document.createElement("li");
+                li.textContent = benefit;
+                benefitsList.appendChild(li);
+            });
+        }
+    </script>
+</body>
+</html>
